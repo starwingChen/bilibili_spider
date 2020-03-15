@@ -19,17 +19,27 @@ from bilibili_spider.items import UserItem
 class PageUserSpider(scrapy.Spider):
     name = 'page_user'
     allowed_domains = ['api.bilibili.com']
-    start_urls = ['https://api.bilibili.com/x/space/acc/info?mid=5907263']
+    start_urls = ['https://api.bilibili.com/x/relation/followings?vmid=5907263']
 
     custom_settings = {
         'ITEM_PIPELINES': {'bilibili_spider.pipelines.UserPipeline': 300},
     }
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/80.0.3987.132 Safari/537.36 '
-    }
 
     def parse(self, response):
+        res = json.loads(response.body)
+        # 获得所有follow的mid
+        mid_lis = [user['mid'] for user in res['data']['list']]
+        for m in mid_lis:
+            info_url = 'https://api.bilibili.com/x/space/acc/info?mid=' + str(m)
+            yield Request(info_url, callback=self.parse_info)
+
+            fing_url = 'https://api.bilibili.com/x/relation/followings?vmid=' + str(m)
+            yield Request(fing_url, callback=self.parse)
+
+            # fer_url = 'https://api.bilibili.com/x/relation/followers?vmid=' + str(m)
+            # yield Request(fer_url, callback=self.parse)
+
+    def parse_info(self, response):
         res = json.loads(response.body)
         data = res['data']
 
@@ -93,4 +103,4 @@ class PageUserSpider(scrapy.Spider):
         item['album'] = data['album']
         item['audio'] = data['audio']
 
-        yield item
+        # yield item
