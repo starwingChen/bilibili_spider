@@ -79,10 +79,7 @@ class UserPipeline(object):
         return cls(dbpool)
 
     def process_item(self, item, spider):
-        if item['type'] == 'basic':
-            query = self.dbpool.runInteraction(self.sql_insert, item)  # 写两个函数或添加一个参数
-        elif item['type'] == 'achieve':
-            query = self.dbpool.runInteraction(self.sql_insert, item)
+        query = self.dbpool.runInteraction(self.sql_insert, item)
         query.addErrback(self.handle_error)
         return item
 
@@ -90,14 +87,13 @@ class UserPipeline(object):
     def sql_insert(cursor, item):
         # 需要where not exist
         state = """
-                       insert ignore into video(aid, tid, tname, title, date, time, now, descs, dynamic, o_mid, o_name, views, danmakus, replies, favorites, coins, shares, likes)
-                       values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                       insert ignore into user(mid, uname, sex, levels, viptype, sign, descs, followings, followers, v_views, a_views, likes, videos, articles, albums, audios)
+                       values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
            """
         # twisted会自动commit
-        cursor.execute(state, (item['aid'], item['tid'], item['tname'], item['title'], item['date'],
-                               item['time_'], item['now'], item['desc'], item['dynamic'], item['o_mid'],
-                               item['o_name'], item['view'], item['danmaku'], item['reply'], item['favorite'],
-                               item['coin'], item['share'], item['like']))
+        cursor.execute(state, (item['mid'], item['name'], item['sex'], item['level'], item['viptype'], item['sign'],
+                               item['desc'], item['following'], item['follower'], item['v_view'], item['a_view'],
+                               item['likes'], item['video'], item['article'], item['album'], item['audio']))
         # 更新操作要另外写
         return item
 
