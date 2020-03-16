@@ -17,12 +17,12 @@ class PageVideoSpider(scrapy.Spider):
     # 一定要是域名！！
     allowed_domains = ['api.bilibili.com']
     # 0和1是同一页,173=60*60*24/10/50
-    start_urls = ['https://api.bilibili.com/x/web-interface/newlist?rid=24&pn=173']
+    pn = 174
+    start_urls = ['https://api.bilibili.com/x/web-interface/newlist?rid=24&pn='+str(pn)]
     custom_settings = {
         'ITEM_PIPELINES': {'bilibili_spider.pipelines.VideoPipeline': 300},
     }
 
-    pn = 174
     # 采用广度优先
     rids = [
         24, 25, 47, 86, 27,  # 动画
@@ -45,16 +45,18 @@ class PageVideoSpider(scrapy.Spider):
     ]
     # 从第二个开始
     point = 1
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
-                      'Chrome/80.0.3987.132 Safari/537.36 '
-    }
+    # headers = {
+    #     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
+    #                   'Chrome/80.0.3987.132 Safari/537.36 '
+    # }
 
     def parse(self, response):
         res = json.loads(response.body)
 
         if res['data']['page']['count'] == 0:
             del self.rids[self.point]
+        if not self.rids:
+            self.crawler.engine.close_spider(self, '所有分区爬取完毕，爬虫停止')
 
         for video in res['data']['archives']:
 
@@ -122,13 +124,12 @@ class PageVideoSpider(scrapy.Spider):
         self.point = (self.point + 1) % len(self.rids)
         if self.point == 0:
             self.pn += 1
-            next_url = re.sub(r'(?<=pn=)\d+', str(self.pn), response.url)
+            next_url = re.sub(r'(?<=pn=)\d+', str(self.pn), response.url)  # 多余了
             next_url = re.sub(r'(?<=rid=)\d+', str(self.rids[self.point]), next_url)
 
         else:
             next_url = re.sub(r'(?<=rid=)\d+', str(self.rids[self.point]), response.url)
         yield Request(url=next_url, callback=self.parse)
-
 
 
 '''

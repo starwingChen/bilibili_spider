@@ -34,21 +34,21 @@ class VideoItem(scrapy.Item):
 
 
 class UserItem(scrapy.Item):
-    mid = scrapy.Field()
-    name = scrapy.Field()
-    sex = scrapy.Field()
-    sign = scrapy.Field()
-    level = scrapy.Field()
-    desc = scrapy.Field()
-    viptype = scrapy.Field()
+    mid = scrapy.Field()  # up主uid
+    name = scrapy.Field()  # up主名称
+    sex = scrapy.Field()  # 性别
+    sign = scrapy.Field()  # 签名
+    level = scrapy.Field()  # 等级
+    desc = scrapy.Field()  # 头衔
+    viptype = scrapy.Field()  # vip类别，0为普通会员，1为大会员，2为年度大会员
 
-    following = scrapy.Field()
-    follower = scrapy.Field()
-    v_view = scrapy.Field()
-    a_view = scrapy.Field()
-    likes = scrapy.Field()
+    following = scrapy.Field()  # 关注数
+    follower = scrapy.Field()  # 粉丝数
+    v_view = scrapy.Field()  # 总播放数
+    a_view = scrapy.Field()  # 总阅读数
+    likes = scrapy.Field()  # 总获赞数
 
-    video = scrapy.Field()
-    article = scrapy.Field()
-    album = scrapy.Field()
-    audio = scrapy.Field()
+    video = scrapy.Field()  # 投稿视频数
+    article = scrapy.Field()  # 投稿文章数
+    album = scrapy.Field()  # 相簿数
+    audio = scrapy.Field()  # 投稿音频数

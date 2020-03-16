@@ -51,9 +51,9 @@ ROBOTSTXT_OBEY = True
 
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#    'bilibili_spider.middlewares.BilibiliSpiderDownloaderMiddleware': 543,
-# }
+DOWNLOADER_MIDDLEWARES = {
+   'bilibili_spider.middlewares.RandomUserAgentMiddleware': 543,
+}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -64,8 +64,8 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'bilibili_spider.pipelines.VideoPipeline': 1,
-   'bilibili_spider.pipelines.UserPipeline': 2,
+    'bilibili_spider.pipelines.VideoPipeline': 1,
+    'bilibili_spider.pipelines.UserPipeline': 2,
 }
 
 # Enable and configure the AutoThrottle extension (disabled by default)
@@ -94,3 +94,6 @@ MYSQL_HOST = '127.0.0.1'
 MYSQL_PORT = 3306  # 不能是str
 MYSQL_USER = 'root'
 MYSQL_PSWD = '917346'
+
+# 随机选择UA
+RANDOM_UA_TYPE = "chrome"
