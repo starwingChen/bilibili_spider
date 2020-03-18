@@ -52,3 +52,5 @@ class UserItem(scrapy.Item):
     article = scrapy.Field()  # 投稿文章数
     album = scrapy.Field()  # 相簿数
     audio = scrapy.Field()  # 投稿音频数
+
+    now = scrapy.Field()  # 爬取时间

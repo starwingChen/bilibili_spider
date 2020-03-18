@@ -39,7 +39,7 @@ class VideoPipeline(object):
 
     @staticmethod
     def sql_insert(cursor, item):
-        # 需要where not exist
+        # without update
         state = """
                        insert ignore into video(aid, tid, tname, title, date, time, now, descs, dynamic, o_mid, o_name, views, danmakus, replies, favorites, coins, shares, likes)
                        values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
@@ -49,7 +49,6 @@ class VideoPipeline(object):
                                item['time_'], item['now'], item['desc'], item['dynamic'], item['o_mid'],
                                item['o_name'], item['view'], item['danmaku'], item['reply'], item['favorite'],
                                item['coin'], item['share'], item['like']))
-        # 更新操作要另外写
         return item
 
     @staticmethod
@@ -85,16 +84,16 @@ class UserPipeline(object):
 
     @staticmethod
     def sql_insert(cursor, item):
-        # 需要where not exist
+        # without update
         state = """
-                       insert ignore into user(mid, uname, sex, levels, viptype, sign, descs, followings, followers, v_views, a_views, likes, videos, articles, albums, audios)
-                       values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                       insert ignore into user(mid, uname, sex, levels, viptype, sign, descs, followings, followers, v_views, a_views, likes, videos, articles, albums, audios, now)
+                       values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
            """
         # twisted会自动commit
         cursor.execute(state, (item['mid'], item['name'], item['sex'], item['level'], item['viptype'], item['sign'],
                                item['desc'], item['following'], item['follower'], item['v_view'], item['a_view'],
-                               item['likes'], item['video'], item['article'], item['album'], item['audio']))
-        # 更新操作要另外写
+                               item['likes'], item['video'], item['article'], item['album'], item['audio'], item['now']))
+
         return item
 
     @staticmethod
